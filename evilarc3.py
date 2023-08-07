@@ -87,8 +87,10 @@ def main():
     zpath = dir * args.depth + args.path + os.path.basename(fname)
     ext = os.path.splitext(args.output_file)[1]
     if os.path.exists(args.output_file):
+        print(f"Appending {args.output_file} containing {zpath}")
         wmode = "a"
     else:
+        print(f"Creating {args.output_file} containing {zpath}")
         wmode = "w"
     if ext == ".zip" or ext == ".jar":
         zf = zipfile.ZipFile(args.output_file, wmode)
@@ -105,7 +107,6 @@ def main():
         print(f"Could not identify output archive format for {ext}")
         quit(1)
 
-    print(f"Creating {args.output_file} containing {zpath}")
     tf = tarfile.open(args.output_file, mode)
     tf.add(fname, zpath)
     tf.close()
