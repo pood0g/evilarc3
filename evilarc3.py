@@ -68,6 +68,18 @@ def main():
         help="Path to include in filename after traversal.  Ex: WINDOWS\\System32\\",
         default="",
     )
+    p.add_argument(
+        "--zippath",
+        "-zp",
+        metavar="zippath",
+        help="The Filename to use inside the archive, can inject newlines or other chars"
+    )
+    p.add_argument(
+        "--overwrite",
+        "-ow",
+        action="store_true",
+        help="Overwrite file if it exists"
+    )
     args = p.parse_args()
 
     fname = args.infile
@@ -84,9 +96,12 @@ def main():
         if args.path and args.path[-1] != "/":
             args.path += "/"
 
-    zpath = dir * args.depth + args.path + os.path.basename(fname)
+    if not args.zippath:
+        zpath = dir * args.depth + args.path + os.path.basename(fname)
+    else:
+        zpath = dir * args.depth + args.path + args.zippath
     ext = os.path.splitext(args.output_file)[1]
-    if os.path.exists(args.output_file):
+    if os.path.exists(args.output_file) and not args.overwrite:
         print(f"Appending {args.output_file} containing {zpath}")
         wmode = "a"
     else:
